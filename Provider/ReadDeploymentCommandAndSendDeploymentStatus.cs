@@ -17,7 +17,7 @@ namespace CustomerFunctions
 
         // ServiceBusConnection resolves to ServiceBusConnection__fullyQualifiedNamespace
         // which is referenced within the local.settings.json file to use the managed identity
-        public void Run([ServiceBusTrigger("%DeploymentCommandQueueName%", 
+        public void Run([ServiceBusTrigger("%InitiatedDeploymentQueueName%", 
             Connection = "ServiceBusConnection")]string command, ILogger log)
         {
             log.LogInformation($"ReadDeploymentCommandAndSendDeploymentStatus triggered with command: {command}");
@@ -25,7 +25,7 @@ namespace CustomerFunctions
             var credential = new DefaultAzureCredential();
 
             var serviceBusNamespace = Environment.GetEnvironmentVariable("ServiceBusConnection__fullyQualifiedNamespace");
-            var deploymentStatusQueueName = Environment.GetEnvironmentVariable("DeploymentStatusQueueName");
+            var deploymentStatusQueueName = Environment.GetEnvironmentVariable("CommandQueueName");
             var client = new ServiceBusClient(serviceBusNamespace, credential);
 
             var sender = client.CreateSender(deploymentStatusQueueName);

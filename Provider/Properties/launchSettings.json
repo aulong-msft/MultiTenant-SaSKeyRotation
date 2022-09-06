@@ -1,8 +1,8 @@
 {
   "profiles": {
-    "ProviderFunctions": {
+    "CustomerFunctions": {
       "commandName": "Project",
-      "commandLineArgs": "--port 7117",
+      "commandLineArgs": "--port 7169",
       "launchBrowser": false
     }
   }

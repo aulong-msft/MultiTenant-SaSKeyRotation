@@ -9,9 +9,12 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 
 // Pre-function work
-// 1) create a service principal (SP) in the provider 
-// 2) "federate" the SP with the customer's tenant (i.e)
-// 3) give the SP access to the service bus
+// This functions purpose is to kick off the sas key update and act
+// as an update app message onto the service bus queue
+
+// 1) create SaS key from the initiateDeploymentQueue (or namespace level?)
+// 2) set up connetion string (?) for SaS key
+// 3) send an "update" message to the initiateDeploymentQueue
 
 namespace ProviderFunctions
 {
@@ -43,7 +46,7 @@ namespace ProviderFunctions
             var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
 
             var serviceBusNamespace = Environment.GetEnvironmentVariable("ServiceBusNamespace");
-            var deploymentCommandQueueName = Environment.GetEnvironmentVariable("DeploymentCommandQueueName");
+            var deploymentCommandQueueName = Environment.GetEnvironmentVariable("CommandQueueName");
             var client = new ServiceBusClient(serviceBusNamespace, credential);
 
             var sender = client.CreateSender(deploymentCommandQueueName);
