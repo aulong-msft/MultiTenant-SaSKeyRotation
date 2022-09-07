@@ -40,16 +40,18 @@ namespace ProviderFunctions
             log.LogInformation($"SendDeploymentCommand endpoint called with customerId = {customerId}");
             var deploymentCommand = $"Start deployment for {customerId}";
 
-            var tenantId = Environment.GetEnvironmentVariable("CustomerTenantId");
-            var clientId = Environment.GetEnvironmentVariable("ClientId");
-            var clientSecret = Environment.GetEnvironmentVariable("ClientSecret");
-            var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+           // var tenantId = Environment.GetEnvironmentVariable("CustomerTenantId");
+            //var clientId = Environment.GetEnvironmentVariable("ClientId");
+           // var clientSecret = Environment.GetEnvironmentVariable("ClientSecret");
+          //  var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+            var credential = new DefaultAzureCredential();
 
-            var serviceBusNamespace = Environment.GetEnvironmentVariable("ServiceBusNamespace");
-            var deploymentCommandQueueName = Environment.GetEnvironmentVariable("CommandQueueName");
+            var serviceBusNamespace = Environment.GetEnvironmentVariable("ServiceBusConnection__fullyQualifiedNamespace");
+            var initiatedDeploymentQueueName = Environment.GetEnvironmentVariable("InitiatedDeploymentQueueName");
+           
             var client = new ServiceBusClient(serviceBusNamespace, credential);
 
-            var sender = client.CreateSender(deploymentCommandQueueName);
+            var sender = client.CreateSender(initiatedDeploymentQueueName);
             using var messageBatch = await sender.CreateMessageBatchAsync();
             messageBatch.TryAddMessage(new ServiceBusMessage(deploymentCommand));
 
