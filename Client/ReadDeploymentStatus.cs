@@ -9,19 +9,28 @@ namespace ProviderFunctions
     public class ReadDeploymentStatus
     {
         // A function for the Provider to try reading from the Customer's deployment status
-        // queue every 10 seconds
         [FunctionName("ReadDeploymentStatus")]
-        public void Run([TimerTrigger("*/10 * * * * *")]TimerInfo myTimer, ILogger log)
-        {
-            var customerTenantId = Environment.GetEnvironmentVariable("CustomerTenantId");
-            var providerClientId = Environment.GetEnvironmentVariable("ClientId");
-            var providerClientSecret = Environment.GetEnvironmentVariable("ClientSecret");
-            var credential = new ClientSecretCredential(customerTenantId, providerClientId, providerClientSecret);
 
-            var serviceBusNamespace = Environment.GetEnvironmentVariable("ServiceBusNamespace");
-            var deploymentStatusQueueName = Environment.GetEnvironmentVariable("DeploymentStatusQueueName");
-            var client = new ServiceBusClient(serviceBusNamespace, credential);
-            
+        public void Run([ServiceBusTrigger("%CommandQueueName%", 
+            Connection = "ServiceBusConnection")]string command, ILogger log)
+        {
+            //var customerTenantId = Environment.GetEnvironmentVariable("CustomerTenantId");
+            //var providerClientId = Environment.GetEnvironmentVariable("ClientId");
+            //var providerClientSecret = Environment.GetEnvironmentVariable("ClientSecret");
+           // var credential = new ClientSecretCredential(customerTenantId, providerClientId, providerClientSecret);
+           // var serviceBusNamespace = Environment.GetEnvironmentVariable("ServiceBusNamespace");
+          
+            var responseQueue = Environment.GetEnvironmentVariable("ReponseQueueName");
+            var sasPrimaryKeyConnectionString  = Environment.GetEnvironmentVariable("CommandQueueSaSConnectionStringPk");
+            var client = new ServiceBusClient(sasPrimaryKeyConnectionString);
+
+            log.LogInformation($"ReadDeploymentStatus triggered with command: {command}");
+
+           // var sender = client.CreateSender(responseQueue);
+           // var message = new ServiceBusMessage(command);
+           // sender.SendMessageAsync(message).GetAwaiter().GetResult();
+
+           /* 
             var receiver = client.CreateReceiver(deploymentStatusQueueName);
 
             var receivedMessage = receiver.ReceiveMessageAsync().GetAwaiter().GetResult();
@@ -36,6 +45,7 @@ namespace ProviderFunctions
 
             // Mark the message for deletion on the queue
             receiver.CompleteMessageAsync(receivedMessage).GetAwaiter().GetResult();
+        */
         }
     }
 }

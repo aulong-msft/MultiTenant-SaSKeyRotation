@@ -25,10 +25,10 @@ namespace CustomerFunctions
             var credential = new DefaultAzureCredential();
 
             var serviceBusNamespace = Environment.GetEnvironmentVariable("ServiceBusConnection__fullyQualifiedNamespace");
-            var deploymentStatusQueueName = Environment.GetEnvironmentVariable("CommandQueueName");
+            var commandQueue = Environment.GetEnvironmentVariable("CommandQueueName");
             var client = new ServiceBusClient(serviceBusNamespace, credential);
 
-            var sender = client.CreateSender(deploymentStatusQueueName);
+            var sender = client.CreateSender(commandQueue);
             var message = new ServiceBusMessage(command);
             sender.SendMessageAsync(message).GetAwaiter().GetResult();
         }       
