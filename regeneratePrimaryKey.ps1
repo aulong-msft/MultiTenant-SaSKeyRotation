@@ -8,10 +8,10 @@ New-AzServiceBusKey -ResourceGroupName $ResourceGroup -Namespace $SBNameSpace -Q
 New-AzServiceBusKey -ResourceGroupName $ResourceGroup -Namespace $SBNameSpace -Queue $QueueName -Name $AuthRuleName -RegenerateKey PrimaryKey
 }
 
-
+Get-AzSubscription -SubscriptionId "779303a1-aaa1-4bda-976c-f67fafd98442" -TenantId "72f988bf-86f1-41af-91ab-2d7cd011db47" | Set-AzContext
 # You can uncomment this line and run script to rotate in the POC env
-# Invoke-RotateServiceBusKeys -ResourceGroup 'RotateRG' -SBNameSpace 'RotateNS' -QueueName 'commandqueue' -AuthRuleName 'test'
-
+ Invoke-RotateServiceBusKeys -ResourceGroup 'KeyRotationRG' -SBNameSpace 'KeyRotationNS' -QueueName 'commandqueue' -AuthRuleName 'customerCommandQueueListenSaS'
+ Invoke-RotateServiceBusKeys -ResourceGroup 'KeyRotationRG' -SBNameSpace 'KeyRotationNS' -QueueName 'responsequeue' -AuthRuleName 'Responsequeue'
 
 <#
 This script rotates the primary into the secondary and regenerates the primary per the MS Docs.
