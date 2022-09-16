@@ -7,19 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using Wtw.SecretRotationPOC.ServiceBus;
 
 // Pre-function work
 // This functions purpose is to kick off the sas key update and act
 // as an update app message onto the service bus queue
 
-// 1) create SaS key from the initiateDeploymentQueue (or namespace level?)
-// 2) set up connetion string (?) for SaS key
-// 3) send an "update" message to the initiateDeploymentQueue
-
 namespace ProviderFunctions
 {
-    // This function is used to place a message from the provider's tenant
-    // into a service bus in the customer's tenant by using a SP
     public static class SendDeploymentCommand
     {
         [FunctionName("SendDeploymentCommand")]
@@ -27,6 +22,7 @@ namespace ProviderFunctions
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
+            ServiceBusService sbService = new(log);
             log.LogInformation("SendDeploymentCommand endpoint called.");
 
             string customerId = req.Query["customerId"];
@@ -38,17 +34,27 @@ namespace ProviderFunctions
             }
 
             log.LogInformation($"SendDeploymentCommand endpoint called with customerId = {customerId}");
-            var deploymentCommand = $"Start deployment for {customerId}";
+           
+           // retrieve connection strings from Srv Bus for queues
+           var rootString = Environment.GetEnvironmentVariable("RootManageSharedAccessKeyConnectionString");
+           var commandQName = Environment.GetEnvironmentVariable("CommandQueueName");
+           var responseQName = Environment.GetEnvironmentVariable("ResponseQueueName");
+           var cmdSaPolicyName = Environment.GetEnvironmentVariable("CommandQueueAuthPolName");
+           var respSaPolicyName = Environment.GetEnvironmentVariable("ResponseQueueAuthPolName");
 
-           // var tenantId = Environment.GetEnvironmentVariable("CustomerTenantId");
-            //var clientId = Environment.GetEnvironmentVariable("ClientId");
-           // var clientSecret = Environment.GetEnvironmentVariable("ClientSecret");
-          //  var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+           DateTime now = DateTime.Now;
+           TimeSpan span = now.AddYears(1) - now;
+           
+           var cmdConnectionStr = await sbService.GetSASTokenConnectionString(rootString, commandQName, cmdSaPolicyName, span);
+           var respConnectionStr = await sbService.GetSASTokenConnectionString(rootString, responseQName, respSaPolicyName, span);
+
             var credential = new DefaultAzureCredential();
 
             var serviceBusNamespace = Environment.GetEnvironmentVariable("ServiceBusConnection__fullyQualifiedNamespace");
             var initiatedDeploymentQueueName = Environment.GetEnvironmentVariable("InitiatedDeploymentQueueName");
            
+
+            var deploymentCommand = $"{cmdConnectionStr}";
             var client = new ServiceBusClient(serviceBusNamespace, credential);
 
             var sender = client.CreateSender(initiatedDeploymentQueueName);
