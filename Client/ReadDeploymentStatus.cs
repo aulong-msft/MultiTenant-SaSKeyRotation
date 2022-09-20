@@ -21,25 +21,31 @@ namespace ProviderFunctions
             var keyVaultUrl = Environment.GetEnvironmentVariable("KeyVaultName");
             
             //KV code 
-            //1.) create system assigned managed identity to access the KV
-            //2.) create secret in KV with primary key from SB
-            //3.) create a secret client to grab out the secret
-            //4.) todo figure out how (in code) to reroll the secret and place it back into the KV
-            
+            //0.) Investigate function restarting
+            //1.) Create system assigned managed identity to access the KV with AzureDefaultCredential
             var clientKV = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
-            // Create a new secret using the secret client.
+
+            //2.) Decrypt the message received from the command queue
+            //3.) Store the new values in the KV
+
+            // Retrieve secrets using the secret client
             KeyVaultSecret CommandQueuePK = clientKV.GetSecret("CommandQueuePK");
             KeyVaultSecret ReponseQueuePK = clientKV.GetSecret("ReponseQueuePK");
-
-            log.LogInformation($"KeyVaultSecret triggered");
-
-            // Retrieve a secret using the secret client.
+            
             Console.WriteLine(ReponseQueuePK.Name);
             Console.WriteLine(ReponseQueuePK.Value);
 
-            //service bus to read the command queue with a SAS key
-            var client = new ServiceBusClient(ReponseQueuePK.Value);
+            // Update Secrets using thr secret client
+           /* var secretNewValue1 = new KeyVaultSecret("CommandQueuePK", "bhjd4DDgsa");
+            secretNewValue1.Properties.ExpiresOn = DateTimeOffset.Now.AddYears(1);
+            clientKV.SetSecret(secretNewValue1);
 
+            var secretNewValue2 = new KeyVaultSecret("ReponseQueuePK", "bhjd4DDgsa");
+            secretNewValue2.Properties.ExpiresOn = DateTimeOffset.Now.AddYears(1);
+            clientKV.SetSecret(secretNewValue2);
+            */
+            //4.) Send an ACK message back to the response queuue
+            var client = new ServiceBusClient(ReponseQueuePK.Value);
             log.LogInformation($"ReadDeploymentStatus triggered with command: {command}");
 
             var sender = client.CreateSender(responseQueue);
