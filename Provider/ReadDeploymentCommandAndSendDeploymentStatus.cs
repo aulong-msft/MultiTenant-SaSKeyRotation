@@ -19,7 +19,7 @@ namespace CustomerFunctions
 
         // ServiceBusConnection resolves to ServiceBusConnection__fullyQualifiedNamespace
         // which is referenced within the local.settings.json file to use the managed identity
-        public async Task<IActionResult> Run([ServiceBusTrigger("%InitiatedDeploymentQueueName%",
+        public static void Run([ServiceBusTrigger("%InitiatedDeploymentQueueName%",
             Connection = "ServiceBusConnection")]string command, ILogger log)
         {
             log.LogInformation($"ReadDeploymentCommandAndSendDeploymentStatus triggered with command: {command}");
@@ -34,8 +34,8 @@ namespace CustomerFunctions
             var cmdSaPolicyName = Environment.GetEnvironmentVariable("CommandQueueAuthPolName");
             var respSaPolicyName = Environment.GetEnvironmentVariable("ResponseQueueAuthPolName");
 
-            var cmdConnectionStr = await sbService.GetSASTokenConnectionString(rootString, commandQName, cmdSaPolicyName, span);
-            var respConnectionStr = await sbService.GetSASTokenConnectionString(rootString, responseQName, respSaPolicyName, span);
+            var cmdConnectionStr =  sbService.GetSASTokenConnectionString(rootString, commandQName, cmdSaPolicyName, span);
+            var respConnectionStr =  sbService.GetSASTokenConnectionString(rootString, responseQName, respSaPolicyName, span);
             var credential = new DefaultAzureCredential();
 
             var serviceBusNamespace = Environment.GetEnvironmentVariable("ServiceBusConnection__fullyQualifiedNamespace");
@@ -46,7 +46,7 @@ namespace CustomerFunctions
             var sender = client.CreateSender(commandQueue);
             var message = new ServiceBusMessage(encryptedCommandMessage);
             sender.SendMessageAsync(message).GetAwaiter().GetResult();
-            return new OkObjectResult(encryptedCommandMessage);
+            
         }
     }
 }

@@ -39,7 +39,7 @@ namespace ProviderFunctions
 
             var serviceBusNamespace = Environment.GetEnvironmentVariable("ServiceBusConnection__fullyQualifiedNamespace");
             var initiatedDeploymentQueueName = Environment.GetEnvironmentVariable("InitiatedDeploymentQueueName");
-             string deploymentCommand = "{customerId}";
+             string deploymentCommand = $"{customerId}";
             var client = new ServiceBusClient(serviceBusNamespace, credential);
 
             var sender = client.CreateSender(initiatedDeploymentQueueName);
