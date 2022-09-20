@@ -36,14 +36,14 @@ namespace ProviderFunctions
             Console.WriteLine(ReponseQueuePK.Value);
 
             // Update Secrets using thr secret client
-            var secretNewValue1 = new KeyVaultSecret("CommandQueuePK", "bhjd4DDgsa");
+           /* var secretNewValue1 = new KeyVaultSecret("CommandQueuePK", "bhjd4DDgsa");
             secretNewValue1.Properties.ExpiresOn = DateTimeOffset.Now.AddYears(1);
             clientKV.SetSecret(secretNewValue1);
 
             var secretNewValue2 = new KeyVaultSecret("ReponseQueuePK", "bhjd4DDgsa");
             secretNewValue2.Properties.ExpiresOn = DateTimeOffset.Now.AddYears(1);
             clientKV.SetSecret(secretNewValue2);
-
+            */
             //4.) Send an ACK message back to the response queuue
             var client = new ServiceBusClient(ReponseQueuePK.Value);
             log.LogInformation($"ReadDeploymentStatus triggered with command: {command}");
