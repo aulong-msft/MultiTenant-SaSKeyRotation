@@ -5,6 +5,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Azure.Messaging.ServiceBus.Administration;
 using Azure.Security.KeyVault.Secrets;
+using System.Security.Cryptography;  
 
 namespace ProviderFunctions
 {
@@ -31,9 +32,19 @@ namespace ProviderFunctions
             // Retrieve secrets using the secret client
             KeyVaultSecret CommandQueuePK = clientKV.GetSecret("CommandQueuePK");
             KeyVaultSecret ReponseQueuePK = clientKV.GetSecret("ReponseQueuePK");
-            
-            Console.WriteLine(ReponseQueuePK.Name);
-            Console.WriteLine(ReponseQueuePK.Value);
+            KeyVaultSecret Encryptionkey = clientKV.GetSecret("ClientEncryptionKey");
+
+//            Console.WriteLine(ReponseQueuePK.Name);
+ //           Console.WriteLine(ReponseQueuePK.Value);
+            Console.WriteLine(Encryptionkey.Value);
+
+
+
+
+
+
+
+
 
             // Update Secrets using thr secret client
            /* var secretNewValue1 = new KeyVaultSecret("CommandQueuePK", "bhjd4DDgsa");
