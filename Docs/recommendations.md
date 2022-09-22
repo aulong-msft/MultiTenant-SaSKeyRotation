@@ -52,7 +52,7 @@ This function is a Service bus triggered function - The initiate deployment stat
 
 1. encrpyt the payload and then send the message into the command queue (investigate encrypting this payload with AES encryption (symmetric encryption)
 
-### Step 5-9 in the Diagram
+### Step 5-8 in the Diagram
 
 This client function will consume the message, decrypt the payload, save off the keys into a KV (or whereever - configs w.e) and sends back an ack to the response queue.
 
