@@ -8,7 +8,7 @@
 
 The security industry best practice suggests to use both symmetic and asymmetic key enrcpytion to ensure the keys are generated and passed safely along to both the provider and the client. In our scenario, we have decided to use a cert; for customer this should be gathered from a trusted certificate authority. With this methodology we can ensure the integrity and confidentiality of cert/key exchanges in our multi-tenanted scenario. Azure Keyvault allows for the generation of public/private key pairs (otherwise known as asymmetric keys). Then the public key would need to be sent over to the provider's keyvault to be referencesd within the architecture.
 
-## How is a KEy or Certificate created and shared?
+## How is a Key or Certificate created and shared?
 
 In our PoC a cert is generated from a Powershell CMDLT, In a real scenario this cert should be obtained by a trusted source and given to the Provider to use for encrpyting the key rotation payload which contains the new SaS key pairs. Once the payload is received from the provider on the Service Bus, the client can decrypt the payload with the private cert which will be stored in the client's KV.
 
