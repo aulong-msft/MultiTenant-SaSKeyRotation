@@ -2,7 +2,7 @@
 
 ## What is the benefit of having a second layer of encryption?
 
-> The Service Bus communication is encrypted by default.  Clients are able to access data via a SAS Token derived from the SAS keys.  The security provided via this infrastructure is solely reliant on the security of the provider.  If somehow, the provider is compromised all of the communication with the clients is also compromised.  If however only the SAS Token is compromised all may not be compromised. In the recommendation for rotation of secrets, we are having the client utilize an additional layer of encryption with a symmetric encryption algorithm.  In this situation, if the SaS tokens are compromised this mechanism can protect the transmission of the rotated secrets from being tampered with.
+The Service Bus communication is encrypted by default.  Clients are able to access data via a SAS Token derived from the SAS keys.  The security provided via this infrastructure is solely reliant on the security of the provider.  If somehow, the provider is compromised all of the communication with the clients is also compromised.  If however only the SAS Token is compromised all may not be compromised. In the recommendation for rotation of secrets, we are having the client utilize an additional layer of encryption with a symmetric encryption algorithm.  In this situation, if the SaS tokens are compromised this mechanism can protect the transmission of the rotated secrets from being tampered with.
 
 ## Asymmetric Encryption, Symmetric Encryption, and Certs
 
