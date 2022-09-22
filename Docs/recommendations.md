@@ -2,15 +2,15 @@
 
 ## What is the benefit of having a second layer of encryption?
 
-> The Service Bus communication is encrypted by default.  Clients are able to access data via a SAS Token.  The security provided via this infrastructure is solely reliant on the security of the provider.  If somehow, the provider is compromised all of the communication with the clients is also compromised.  In the recommendation for rotation of secrets, we are having the client create a verified CA cert (in our PoC we just use a self-signed cert) and only share the public cert with the provider.  In this situation, if the SaS tokens are compromised this mechanism can protect future secrets from being tampered with.
+> The Service Bus communication is encrypted by default.  Clients are able to access data via a SAS Token derived from the SAS keys.  The security provided via this infrastructure is solely reliant on the security of the provider.  If somehow, the provider is compromised all of the communication with the clients is also compromised.  If however only the SAS Token is compromised all may not be compromised. In the recommendation for rotation of secrets, we are having the client utilize an additional layer of encryption with a symmetric encryption algorithm.  In this situation, if the SaS tokens are compromised this mechanism can protect the transmission of the rotated secrets from being tampered with.
 
 ## Asymmetric Encryption, Symmetric Encryption, and Certs
 
-The security industry best practice suggests to use both symmetic and asymmetic key enrcpytion to ensure the keys are generated and passed safely along to both the provider and the client. In our scenario, we have decided to use a cert; for customer this should be gathered from a trusted certificate authority. With this methodology we can ensure the integrity and confidentiality of cert/key exchanges in our multi-tenanted scenario. Azure Keyvault allows for the generation of public/private key pairs (otherwise known as asymmetric keys). Then the public key would need to be sent over to the provider's keyvault to be referencesd within the architecture.
+The security industry best practice suggests to use both symmetic and asymmetric key encryption to ensure the keys are generated and passed safely along to both the provider and the client. In our scenario, we recommend using a symmetric encryption algorithm, AES, for protection of the rotated secrets. RSA is limited in the length of the plaintext by the length the RSA Keys thus Asymmetric encryption will not suffice given the number and length of secrets being rotated.
 
-## How is a Key or Certificate created and shared?
+## How is a Key or Symmetric Key created and shared?
 
-In our PoC a cert is generated from a Powershell CMDLT, In a real scenario this cert should be obtained by a trusted source and given to the Provider to use for encrpyting the key rotation payload which contains the new SaS key pairs. Once the payload is received from the provider on the Service Bus, the client can decrypt the payload with the private cert which will be stored in the client's KV.
+In our PoC a encryption key is generated from a Powershell CMDLT and stored in the provider key vault.  Once the payload is received from the provider on the Service Bus, the client can decrypt the payload with the symmetric key which will be stored in the client's KV.
 
 ## PoC Architecture
 
