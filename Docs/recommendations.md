@@ -56,14 +56,3 @@ This function is a Service bus triggered function - The initiate deployment stat
 
 This client function will consume the message, decrypt the payload, save off the keys into a KV (or whereever - configs w.e) and sends back an ack to the response queue.
 
-## Stories that need to be investigated
-
-1. Investigate how to restart a function when the new SaS key rotates
-
-1. Spike?? Introduce a client certificate input into the AMA onboarding screen to be placed into the Provier's KV
-
-1. Spike?? Investifate how would the client's cert will get updated
-
-1. Convert powershell script to rotate the Service Bus keys into Pulumi
-
-1. Integrate encryption/decryption into the solution for both sending and receiving functions
