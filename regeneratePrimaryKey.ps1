@@ -78,6 +78,9 @@ Function Invoke-RotateAESKeys256
 # Uncomment this line to generate AES Keys for Secrets rotation
 # Invoke-GenerateAESKeys256 -KeyVaultName "sasKeyROtationKV"
 
+# Uncomment to Rotate the AES Keys
+# Invoke-RotateAESKeys256 "sasKeyRotationKV"
+
 # Uncomment this line to rotate the Command Queue Keys
 # Invoke-RotateServiceBusKeys -ResourceGroup 'KeyRotationRG' -SBNameSpace 'KeyRotationNS' -QueueName 'commandqueue' -AuthRuleName 'customerCommandQueueListenSaS'
  
