@@ -49,6 +49,31 @@ Function Invoke-GenerateAESKeys256
 
 }
 
+Function Invoke-RotateAESKeys256
+{
+    param($KeyVaultName)
+
+    # Retrieve the Primary Key
+    $secret = Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name "RotateAESPK" -AsPlainText
+
+    # Convert to Secure String
+    $SecurePK = ConvertTo-SecureString $secret -AsPlainText -Force
+
+    # Set Secondary to Primary
+    $secret = Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name "RotateAESSK" -SecretValue $SecurePK
+
+    # Generate new PK
+    $AESKeyPK = New-Object Byte[] 32
+    [Security.Cryptography.RNGCryptoServiceProvider]::Create().GetBytes($AESKeyPK)
+
+    #Convert to Base64 strin
+    $AesPKB64 = [Convert]::ToBase64String($AESKeyPK)
+
+    #Convert to Secure String
+    $NewSecurePK = ConvertTo-SecureString $AesPKB64 -AsPlainText -Force
+    $secret = Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name "RotateAESPK" -SecretValue $NewSecurePK
+}
+
 
 # Uncomment this line to generate AES Keys for Secrets rotation
 # Invoke-GenerateAESKeys256 -KeyVaultName "sasKeyROtationKV"
