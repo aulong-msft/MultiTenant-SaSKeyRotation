@@ -14,6 +14,7 @@ namespace ClientFunctions
     public class ReadDeploymentStatus
     {
 
+        //Decrypt a payload from the Service Bus
         static string DecryptStringFromBytes_Aes(byte[] cipherText, byte[] Key, byte[] IV)
         {
             // Check arguments.
@@ -57,48 +58,41 @@ namespace ClientFunctions
             return plaintext;
         }
 
-
-        // A function for the CLIENT to try reading from the Customer's deployment status
+        // A function for the client to try reading from the providers service bus queue
         [FunctionName("ReadDeploymentStatus")]
         public void Run([ServiceBusTrigger("%CommandQueueName%",
             Connection = "CommandQueueSaSConnectionStringPk")]byte[] command, ILogger log)
         {
 
-            Console.WriteLine($"received {command} as the message");
             var responseQueue = Environment.GetEnvironmentVariable("ReponseQueueName");
             var responseQueueConnectionString = Environment.GetEnvironmentVariable("ResponseQueueSaSConnectionStringPk");
             var keyVaultUrl = Environment.GetEnvironmentVariable("KeyVaultName");
-            string AESKey = Environment.GetEnvironmentVariable("AESKey");
-            string IV = Environment.GetEnvironmentVariable("IV");
-            string vaultUrl = Environment.GetEnvironmentVariable("KeyVaultURL");
 
-            string decryptedCommandMessage;
-            byte[] aeskey = Encoding.ASCII.GetBytes(AESKey);
-            byte[] iv = Encoding.ASCII.GetBytes(IV);
-
-            using (Aes myAes = Aes.Create())
-            {
-                decryptedCommandMessage = DecryptStringFromBytes_Aes(command, aeskey, iv);
-            }
-                Console.WriteLine(decryptedCommandMessage);
-
-            //KV code 
             // Create system assigned managed identity to access the KV with AzureDefaultCredential
             var clientKV = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
 
             // Retrieve secrets using the secret client
             KeyVaultSecret CommandQSasString = clientKV.GetSecret("CommandQSasString");
             KeyVaultSecret ReponseQueuePK = clientKV.GetSecret("ReponseQueuePK");
+            KeyVaultSecret AESKey = clientKV.GetSecret("AESPK");
+            KeyVaultSecret IV = clientKV.GetSecret("IV");
 
-            Console.WriteLine(CommandQSasString.Value);
-            // Update Secrets using thr secret client
+            // Convert the values into an AES desired format
+            string decryptedCommandMessage;
+            byte[] aeskey = Encoding.ASCII.GetBytes(AESKey.Value);
+            byte[] iv = Encoding.ASCII.GetBytes(IV.Value);
+
+            // Code to decrypt the service bus payload
+            using (Aes myAes = Aes.Create())
+            {
+                decryptedCommandMessage = DecryptStringFromBytes_Aes(command, aeskey, iv);
+            }
+
+            // Update Secrets in the key vault
             var secretNewValue1 = new KeyVaultSecret("CommandQSasString", decryptedCommandMessage);
-            //secretNewValue1.Properties.ExpiresOn = DateTimeOffset.Now.AddYears(1);
-            clientKV.SetSecret(secretNewValue1);
+            clientKV.SetSecret(secretNewValue1);        
             
-            Console.WriteLine(secretNewValue1.Value);
-            
-            //4.) Send an ACK message back to the response queuue
+            // Send an ACK message back to the response queuue
             var client = new ServiceBusClient(ReponseQueuePK.Value);
             log.LogInformation($"ReadDeploymentStatus triggered with command: {command}");
 
