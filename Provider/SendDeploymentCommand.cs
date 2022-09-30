@@ -8,11 +8,6 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 
-
-// Pre-function work
-// This functions purpose is to kick off the sas key update and act
-// as an update app message onto the service bus queue
-
 namespace ProviderFunctions
 {
     public static class SendDeploymentCommand
@@ -24,7 +19,6 @@ namespace ProviderFunctions
         {
 
             log.LogInformation("SendDeploymentCommand endpoint called.");
-
             string customerId = req.Query["customerId"];
 
             if (string.IsNullOrEmpty(customerId))
@@ -36,20 +30,18 @@ namespace ProviderFunctions
             log.LogInformation($"SendDeploymentCommand endpoint called with customerId = {customerId}");
 
             var credential = new DefaultAzureCredential();
-
             var serviceBusNamespace = Environment.GetEnvironmentVariable("ServiceBusConnection__fullyQualifiedNamespace");
             var initiatedDeploymentQueueName = Environment.GetEnvironmentVariable("InitiatedDeploymentQueueName");
-             string deploymentCommand = $"{customerId}";
+            string deploymentCommand = $"{customerId}";
             var client = new ServiceBusClient(serviceBusNamespace, credential);
 
             var sender = client.CreateSender(initiatedDeploymentQueueName);
             using var messageBatch = await sender.CreateMessageBatchAsync();
             messageBatch.TryAddMessage(new ServiceBusMessage(deploymentCommand));
-           
-
+            
             try
             {
-                // Use the producer client to send the batch of messages to the Service Bus queue
+                // Use the provider to send the batch of messages to the service bus queue
                 await sender.SendMessagesAsync(messageBatch);
             }
             finally
