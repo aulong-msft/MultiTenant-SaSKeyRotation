@@ -29,14 +29,14 @@ New-AzServiceBusKey -ResourceGroupName $ResourceGroup -Namespace $SBNameSpace -Q
 
 Function Invoke-GenerateAESKeys256
 {
-    param($KeyVaultName)
+    param($KeyVaultName, $RotateAESPK, $RoateAESSK))
     # Generate a random AES Encryption Key.
     $AESKeyPK = New-Object Byte[] 32
     $AESKey2K = New-Object Byte[] 32
     [Security.Cryptography.RNGCryptoServiceProvider]::Create().GetBytes($AESKeyPK)
     [Security.Cryptography.RNGCryptoServiceProvider]::Create().GetBytes($AESKey2K)
     
-    #Convert to Base64 strin
+    #Convert to Base64 string
     $AesPKB64 = [Convert]::ToBase64String($AESKeyPK)
     $AesP2B64 = [Convert]::ToBase64String($AESKey2K)
 
@@ -44,34 +44,34 @@ Function Invoke-GenerateAESKeys256
     $SecurePK = ConvertTo-SecureString $AesPKB64 -AsPlainText -Force
     $Secure2K = ConvertTo-SecureString $AesP2B64 -AsPlainText -Force
 
-    $secret = Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name "RotateAESPK" -SecretValue $SecurePK
-    $secret = Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name "RotateAESSK" -SecretValue $Secure2K
+    $secretpk = Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $RotateAESPK -SecretValue $SecurePK
+    $secretsk = Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $RotateAESSK -SecretValue $Secure2K
 
 }
 
 Function Invoke-RotateAESKeys256
 {
-    param($KeyVaultName)
+    param($KeyVaultName, $RotateAESPK, $RotateAESSK)
 
     # Retrieve the Primary Key
-    $secret = Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name "RotateAESPK" -AsPlainText
+    $secret = Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name $RotateAESPK -AsPlainText
 
     # Convert to Secure String
     $SecurePK = ConvertTo-SecureString $secret -AsPlainText -Force
 
     # Set Secondary to Primary
-    $secret = Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name "RotateAESSK" -SecretValue $SecurePK
+    $secret = Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $RotateAESSK -SecretValue $SecurePK
 
     # Generate new PK
     $AESKeyPK = New-Object Byte[] 32
     [Security.Cryptography.RNGCryptoServiceProvider]::Create().GetBytes($AESKeyPK)
 
-    #Convert to Base64 strin
+    #Convert to Base64 string
     $AesPKB64 = [Convert]::ToBase64String($AESKeyPK)
 
     #Convert to Secure String
     $NewSecurePK = ConvertTo-SecureString $AesPKB64 -AsPlainText -Force
-    $secret = Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name "RotateAESPK" -SecretValue $NewSecurePK
+    $secret = Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $RotateAESPK -SecretValue $NewSecurePK
 }
 
 
