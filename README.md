@@ -1,7 +1,7 @@
 # SaS Key Rotation Strategy
 The Azure infrastructure today contains many services that need to connect in a multi-tenated fashion, some of these servives are challanging for Azure AD to provide a service principal (which eliminates the need for multi-tenant Key rotation) thus a SAS token is utilized to gain access into the Azure cloud services. SAS keys must be rotated to maintain the highest integrity of cloud data and ensuring those keys are safegaurded in transit is also crucial for the system's confidentiality.
 
-This PoC contains a sample solution for handling cross-tenant SaS key rotation for a Service Bus between a Provider and one or more of its Customers. This scenario can be adaptend into solutions that are using services which needs a key rotation strategy in any multi-tenanted capacity. 
+This PoC contains a sample solution for handling cross-tenant SaS key rotation for a Service Bus between a Provider and one or more of its Customers. This scenario can be adaptend into solutions that are using services which needs a key rotation strategy in any multi-tenanted capacity. For simplicity, this solution has been boiled down to a few key componants but can be adapted to fit your solution's needs.
 
 ![PoC Infrastructure](https://github.com/aulong-msft/MultiTenant-SaSKeyRotation/blob/main/Docs/keyrotation.png)
 
