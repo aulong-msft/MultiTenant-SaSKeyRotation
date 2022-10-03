@@ -14,6 +14,10 @@ https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-sas
 I would recommend saving the old key locally prior to executing a rotation.  The rotation is not a atomic transaction wherein it will be rolled
 back in a failure so you want to be able to restore the older key in a failure.
 #>
+$ResourceGroup = "keyRotationRG"
+$SBNameSpace = "keyRotationNS"
+$QueueName = "commandqueue"
+$AuthRuleName = "customerCommandQueueListenSaS"
 
 Function Invoke-RotateServiceBusKeys
 {
@@ -25,6 +29,8 @@ $primary = Get-AzServiceBusKey -ResourceGroupName $ResourceGroup -Namespace $SBN
 #Rotate
 New-AzServiceBusKey -ResourceGroupName $ResourceGroup -Namespace $SBNameSpace -Queue $QueueName -Name $AuthRuleName -RegenerateKey SecondaryKey -KeyValue $primary.PrimaryKey
 New-AzServiceBusKey -ResourceGroupName $ResourceGroup -Namespace $SBNameSpace -Queue $QueueName -Name $AuthRuleName -RegenerateKey PrimaryKey
+
+
 }
 
 Function Invoke-GenerateAESKeys256
@@ -82,7 +88,7 @@ Function Invoke-RotateAESKeys256
 # Invoke-RotateAESKeys256 "sasKeyRotationKV"
 
 # Uncomment this line to rotate the Command Queue Keys
-# Invoke-RotateServiceBusKeys -ResourceGroup 'KeyRotationRG' -SBNameSpace 'KeyRotationNS' -QueueName 'commandqueue' -AuthRuleName 'customerCommandQueueListenSaS'
- 
+ Invoke-RotateServiceBusKeys -ResourceGroup 'KeyRotationRG' -SBNameSpace 'KeyRotationNS' -QueueName 'commandqueue' -AuthRuleName 'customerCommandQueueListenSaS'
+  
 # Uncomment to Rotate the Response Queue Keys
 #Invoke-RotateServiceBusKeys -ResourceGroup 'KeyRotationRG' -SBNameSpace 'KeyRotationNS' -QueueName 'responsequeue' -AuthRuleName 'Responsequeue'

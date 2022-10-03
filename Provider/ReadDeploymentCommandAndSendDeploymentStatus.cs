@@ -3,7 +3,7 @@ using Azure.Identity;
 using Azure.Messaging.ServiceBus;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using Wtw.SecretRotationPOC.ServiceBus;
+using SecretRotationPOC.ServiceBus;
 using System.Security.Cryptography;
 using System.Text;
 using System.IO;
@@ -82,7 +82,7 @@ public class ReadDeploymentCommandAndSendDeploymentStatus
         KeyVaultSecret AESKey = clientKV.GetSecret("AESPK");
         KeyVaultSecret IV = clientKV.GetSecret("IV");
        
-        //create the connection strings from the values extracted from above
+        //grab the sas key using ServiceBus.cs 
         var cmdConnectionStr = sbService.GetSASTokenConnectionString(RootManageSharedAccessKeyConnectionString.Value, commandQueue, cmdSaPolicyName, span);
         var credential = new DefaultAzureCredential();
 
