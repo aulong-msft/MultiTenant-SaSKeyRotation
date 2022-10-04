@@ -20,6 +20,7 @@ In your service bus namespace that you just created, select Access Control (IAM)
 
 #### Grant the Function App Access to the Service Bus Namespace using Managed Identities
 *Note these directions were taken from the doc listed above*
+1. CLick on "Access Control (IAM)"
 1. Click "Add" and select "Add role assignment".
 1. Search for "Azure Service Bus Data Receiver", select it, and click "Next".
 1. On the" Members" tab, under Assign access to, choose Managed Identity
@@ -30,20 +31,59 @@ Your app should appear in a list below the input fields. If you don't see it, yo
 1. Click on your application. It should move down into the Selected members section. Click "Select".
 1. Back on the Add role assignment screen, click "Review + assign". Review the configuration, and then click "Review + assign".
 
-### Set up RBAC for the System Assigned Managed Identity 
-Scope the System Assigned Managed Identity to have "Service Bus Data Owner" roles on the Service Bus. This Service Principal will be used in both writing to a queue with an HTTP triggered function, as well as reading from a queue from a timer triggered function* 
+#### Grant the Function App Access to the Key Vault using Managed Identities
+1. CLick on "Access Control (IAM)"
+1. Click "Add" and select "Add role assignment".
+1. Search for "Key Vault Administrator", select it, and click "Next".
+1. On the" Members" tab, under Assign access to, choose Managed Identity
+1. Click "Select" members to open the Select managed identities panel.
+Confirm that the Subscription is the one in which you created the resources earlier.
+1. In the Managed identity selector, choose "Function App" from the "System-assigned managed identity" category. The label "Function App" may have a number in parentheses next to it, indicating the number of apps in the subscription with system-assigned identities.
+Your app should appear in a list below the input fields. If you don't see it, you can use the Select box to filter the results with your app's name.
+1. Click on your application. It should move down into the Selected members section. Click "Select".
+1. Back on the Add role assignment screen, click "Review + assign". Review the configuration, and then click "Review + assign".
+
+### Set up RBAC for the System Assigned Managed Identities
+Scope the System Assigned Managed Identity to have "Service Bus Data Owner" roles on the Service Bus. This Managed Identity will be used in both writing to a queue with an HTTP triggered function, as well as reading from a queue from a timer triggered function* 
 1. Naviate to the Customer Service Bus namespace
 1. Click on "Access Control (IAM)
 1. Click on "Role Assignments" and "Add" at the top and "Add Role Assignment" 
 1. Select "Azure Service Bus Data Owner" and hit "Next"
-1. Ensure "User, group, or Service Principal" is selected and click "+Select members" in the "Select" field type in the Service Principal name and select
+1. Ensure "User, group, or Service Principal" is selected and click "+Select members" in the "Select" field type in the Service Principal name and select the system assigned managed identity.
+1. Select "Review + assign"
+
+Scope the System Assigned Managed Identity to have "Key Vault Administrator" roles on the Service Bus. This Managed Identity will be used in both writing qne reading from a keyvault with a timer triggered function* 
+1. Naviate to the Customer Service Bus namespace
+1. Click on "Access Control (IAM)
+1. Click on "Role Assignments" and "Add" at the top and "Add Role Assignment" 
+1. Select "Key Vault Administrator" and hit "Next"
+1. Ensure "User, group, or Service Principal" is selected and click "+Select members" in the "Select" field type in the Service Principal name and select the system assigned managed identity.
 1. Select "Review + assign"
 
 ## Customer Setup
 1. Create an Service Bus triggered function to read a message off a Service Bus message queue and place a message into anoter queue. (for demo purposes this flow as optimal to test out the functionality)
-
 *Note! must do an az login -t CUSTOMER TENANT ID before deploying locally, this will mitigate against invalid token issuer error messages*
 
+#### Grant the Function App Access to the Key Vault using Managed Identities
+1. CLick on "Access Control (IAM)"
+1. Click "Add" and select "Add role assignment".
+1. Search for "Key Vault Administrator", select it, and click "Next".
+1. On the" Members" tab, under Assign access to, choose Managed Identity
+1. Click "Select" members to open the Select managed identities panel.
+Confirm that the Subscription is the one in which you created the resources earlier.
+1. In the Managed identity selector, choose "Function App" from the "System-assigned managed identity" category. The label "Function App" may have a number in parentheses next to it, indicating the number of apps in the subscription with system-assigned identities.
+Your app should appear in a list below the input fields. If you don't see it, you can use the Select box to filter the results with your app's name.
+1. Click on your application. It should move down into the Selected members section. Click "Select".
+1. Back on the Add role assignment screen, click "Review + assign". Review the configuration, and then click "Review + assign".
+
+### Set up RBAC for the System Assigned Managed Identities
+Scope the System Assigned Managed Identity to have "Key Vault Administrator" roles on the Service Bus. This Managed Identity will be used in both writing qne reading from a keyvault with a timer triggered function* 
+1. Naviate to the Customer Service Bus namespace
+1. Click on "Access Control (IAM)
+1. Click on "Role Assignments" and "Add" at the top and "Add Role Assignment" 
+1. Select "Key Vault Administrator" and hit "Next"
+1. Ensure "User, group, or Service Principal" is selected and click "+Select members" in the "Select" field type in the Service Principal name and select the system assigned managed identity.
+1. Select "Review + assign"
 
 #### Connect to Service Bus in your function app
 *Note these directions were taken from the doc listed above*
