@@ -3,7 +3,7 @@ using Azure.Identity;
 using Azure.Messaging.ServiceBus;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using Wtw.SecretRotationPOC.ServiceBus;
+using SecretRotationPOC.ServiceBus;
 using System.Security.Cryptography;
 using System.Text;
 using System.IO;

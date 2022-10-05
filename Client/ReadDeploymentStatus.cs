@@ -14,7 +14,7 @@ namespace ClientFunctions
     public class ReadDeploymentStatus
     {
 
-        //Decrypt a payload from the Service Bus
+        //Decrypt an AES payload
         static string DecryptStringFromBytes_Aes(byte[] cipherText, byte[] Key, byte[] IV)
         {
             // Check arguments.
@@ -90,8 +90,8 @@ namespace ClientFunctions
 
             // Update Secrets in the key vault
             var secretNewValue1 = new KeyVaultSecret("CommandQSasString", decryptedCommandMessage);
-            clientKV.SetSecret(secretNewValue1);        
-            
+            clientKV.SetSecret(secretNewValue1);
+
             // Send an ACK message back to the response queuue
             var client = new ServiceBusClient(ReponseQueuePK.Value);
             log.LogInformation($"ReadDeploymentStatus triggered with command: {command}");

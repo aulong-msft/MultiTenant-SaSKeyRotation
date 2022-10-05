@@ -10,7 +10,7 @@ using Microsoft.Azure.ServiceBus.Primitives;
 using System.Threading.Tasks;
 
 
-namespace Wtw.SecretRotationPOC.ServiceBus
+namespace SecretRotationPOC.ServiceBus
 {
     public class ServiceBusService 
     {
