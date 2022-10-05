@@ -56,3 +56,8 @@ This function is a Service bus triggered function - The initiate deployment stat
 
 This client function will consume the message, decrypt the payload, save off the keys into a KV (or whereever - configs w.e) and sends back an ack to the response queue.
 
+### PoC Considerations
+
+1.  For now the readdeploymentstatus function reads the commandqueue connection string from local settings, we must have a consideration on how to ingest this functionality into a function configuration setting and restarting a function to inherit the new key materials.
+  
+ 1. The namespace level key is also stored in the local settings file, this should also be grabbed from the function settings just as it is being grabbed in the project. 
