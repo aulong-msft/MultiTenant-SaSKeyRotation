@@ -25,6 +25,8 @@ $primary = Get-AzServiceBusKey -ResourceGroupName $ResourceGroup -Namespace $SBN
 #Rotate
 New-AzServiceBusKey -ResourceGroupName $ResourceGroup -Namespace $SBNameSpace -Queue $QueueName -Name $AuthRuleName -RegenerateKey SecondaryKey -KeyValue $primary.PrimaryKey
 New-AzServiceBusKey -ResourceGroupName $ResourceGroup -Namespace $SBNameSpace -Queue $QueueName -Name $AuthRuleName -RegenerateKey PrimaryKey
+
+
 }
 
 Function Invoke-GenerateAESKeys256
@@ -83,6 +85,6 @@ Function Invoke-RotateAESKeys256
 
 # Uncomment this line to rotate the Command Queue Keys
 # Invoke-RotateServiceBusKeys -ResourceGroup 'KeyRotationRG' -SBNameSpace 'KeyRotationNS' -QueueName 'commandqueue' -AuthRuleName 'customerCommandQueueListenSaS'
- 
+  
 # Uncomment to Rotate the Response Queue Keys
 #Invoke-RotateServiceBusKeys -ResourceGroup 'KeyRotationRG' -SBNameSpace 'KeyRotationNS' -QueueName 'responsequeue' -AuthRuleName 'Responsequeue'

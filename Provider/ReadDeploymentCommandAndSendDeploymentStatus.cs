@@ -82,7 +82,7 @@ public class ReadDeploymentCommandAndSendDeploymentStatus
         KeyVaultSecret AESKey = clientKV.GetSecret("AESPK");
         KeyVaultSecret IV = clientKV.GetSecret("IV");
        
-        //create the connection strings from the values extracted from above
+        //grab the sas key using ServiceBus.cs 
         var cmdConnectionStr = sbService.GetSASTokenConnectionString(RootManageSharedAccessKeyConnectionString.Value, commandQueue, cmdSaPolicyName, span);
         var credential = new DefaultAzureCredential();
 

@@ -1,12 +1,17 @@
+
+//NOTE these placeholder values can also be implemented within application settings
 {
-    "IsEncrypted": false,
-    "Values": {
-        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-        "ServiceBusConnection__fullyQualifiedNamespace": "<PLACEHOLDER>",
-        "DeploymentCommandQueueName": "<PLACEHOLDER>",
-        "DeploymentStatusQueueName": "<PLACEHOLDER>", 
-
-
-        "AZURE_TENANT_ID": ""
-    }
+"IsEncrypted": false,
+"Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "ProviderTenantId": "<PLACEHOLDER>",
+    "ServiceBusConnection__fullyQualifiedNamespace": "<PLACEHOLDER>", //this is needed to establish a managed identity from the servicebus to azure functions
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "CommandQueueName": "<PLACEHOLDER>",
+    "InitiatedDeploymentQueueName": "<PLACEHOLDER>",
+    "ReponseQueueName": "<PLACEHOLDER>",
+    "KeyvaultUri": "<PLACEHOLDER>",
+    "RootManageSharedAccessKeyConnectionString" : "<PLACEHOLDER>", // this value is needed for the ServiceBus.cs file 
+    "CommandQueueAuthPolName": "<PLACEHOLDER>", //queue level access policy
+    "ResponseQueueAuthPolName": "<PLACEHOLDER>" //queue level access policy
 }

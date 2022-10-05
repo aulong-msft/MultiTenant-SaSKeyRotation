@@ -1,6 +1,6 @@
 namespace RotationPoc.SecretMessage;
 /// <summary>
-/// EmailMessage data model
+/// Secret rotation data model
 /// </summary>
 public class SecretMessage
 {
