@@ -96,5 +96,5 @@ Scope the System Assigned Managed Identity to have "Key Vault Administrator" rol
 Each subdirectory contains a stubbed version of the local.settings.json files which can be modified to run the Azure functions locally. To configure settings in Azure, update the Application Settings.
  
  Since this PoC is multi-tenanted in nature - setting up an environement to handle two seperate identities is recommended, otherwise identity issues might arise in local development. If running locally, ensure your Azure CLI identity is properlly confirured with RBAC settings to acess resouces as you will be action "on behalf" of the azure default credential.
-  
+ 
 *Note! must do an az login -t CUSTOMER TENANT ID before deploying locally, this will mitigate against invalid token issuer error messages*
