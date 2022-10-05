@@ -31,7 +31,7 @@ New-AzServiceBusKey -ResourceGroupName $ResourceGroup -Namespace $SBNameSpace -Q
 
 Function Invoke-GenerateAESKeys256
 {
-    param($KeyVaultName, $RotateAESPK, $RoateAESSK))
+    param($KeyVaultName, $RotateAESPK, $RoateAESSK)
     # Generate a random AES Encryption Key.
     $AESKeyPK = New-Object Byte[] 32
     $AESKey2K = New-Object Byte[] 32

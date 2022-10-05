@@ -19,6 +19,7 @@ public class ReadDeploymentCommandAndSendDeploymentStatus
     {
         // Check arguments.
         if (plainText == null || plainText.Length <= 0)
+
             throw new ArgumentNullException("plainText");
         if (Key == null || Key.Length <= 0)
             throw new ArgumentNullException("Key");
